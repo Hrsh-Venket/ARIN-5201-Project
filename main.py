@@ -8,7 +8,7 @@ from state import AgentState
 import config
 
 # Import diffusers for pipeline initialization
-from diffusers import AutoPipelineForImage2Image
+from diffusers import QwenImageEditPipeline
 import torch
 
 # Import agent functions
@@ -39,15 +39,18 @@ def load_pipeline(state: AgentState) -> AgentState:
         print(f"Loading model: {config.HUGGINGFACE_MODEL}")
         print("This may take a few minutes on first run (downloading model)...")
 
-        # Load the pipeline
-        pipeline = AutoPipelineForImage2Image.from_pretrained(
-            config.HUGGINGFACE_MODEL,  # "Qwen/Qwen-Image-Edit"
-            torch_dtype=torch.float16,
-            use_safetensors=True
+        # Load the pipeline using QwenImageEditPipeline
+        pipeline = QwenImageEditPipeline.from_pretrained(
+            config.HUGGINGFACE_MODEL  # "Qwen/Qwen-Image-Edit"
         )
 
-        # Move to GPU if available
+        # Move to bfloat16 and GPU if available
         device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        # Use bfloat16 if on CUDA, otherwise float32
+        if device == "cuda":
+            pipeline = pipeline.to(torch.bfloat16)
+
         pipeline = pipeline.to(device)
 
         print(f"Pipeline loaded successfully on {device}")

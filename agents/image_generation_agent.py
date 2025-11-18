@@ -3,6 +3,7 @@ Stage 4: Image Generation Agent
 Generates images using diffusers Qwen-Image-Edit with retry loop.
 """
 import os
+import torch
 from PIL import Image
 from state import AgentState
 import config
@@ -81,17 +82,23 @@ def image_generation_agent(state: AgentState) -> AgentState:
             print("Warning: Pipeline not initialized! Using base image as fallback.")
             raise Exception("Pipeline not available")
 
-        # Load input image as PIL Image
-        input_image = Image.open(base_image_path)
+        # Load input image as PIL Image and convert to RGB
+        input_image = Image.open(base_image_path).convert("RGB")
 
         print("Generating image with diffusers pipeline...")
 
-        # Generate image using the pipeline
-        result = pipeline(
-            image=input_image,
-            prompt=prompt,
-            num_inference_steps=config.HUGGINGFACE_INFERENCE_STEPS,
-        )
+        # Prepare inputs for QwenImageEditPipeline
+        inputs = {
+            "image": input_image,
+            "prompt": prompt,
+            "num_inference_steps": config.HUGGINGFACE_INFERENCE_STEPS,
+            "true_cfg_scale": 4.0,
+            "negative_prompt": " ",
+        }
+
+        # Generate image using the pipeline with inference mode
+        with torch.inference_mode():
+            result = pipeline(**inputs)
 
         # Extract the generated image (pipeline returns a list)
         generated_image = result.images[0]
