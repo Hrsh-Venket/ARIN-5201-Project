@@ -16,7 +16,7 @@ from langgraph.graph import StateGraph, END
 OPENROUTER_API_KEY = "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"
 
 # Model identifiers
-DEEPSEEK_MODEL = "deepseek/deepseek-chat"
+DEEPSEEK_MODEL = "`deepseek/deepseek-chat`"
 POLLINATIONS_API = "https://image.pollinations.ai/prompt"  # Free image generation (no key needed!)
 
 # =============================================================================
@@ -65,7 +65,7 @@ def deepseek_agent(state: AgentState) -> AgentState:
             }
         ],
         temperature=0.7,
-        max_tokens=500,  # Limit tokens to save credits (prompt only needs ~200 tokens)
+        max_tokens=200,  # Limit tokens to save credits (prompt only needs ~200 tokens)
     )
 
     image_prompt = response.choices[0].message.content.strip()

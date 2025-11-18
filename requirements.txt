@@ -1,0 +1,19 @@
+# Core dependencies for LangGraph Poster Generator
+langgraph>=0.0.20
+langchain>=0.1.0
+openai>=1.0.0
+python-dotenv>=1.0.0
+
+# Image processing
+Pillow>=10.0.0
+requests>=2.31.0
+huggingface_hub>=0.20.0
+
+# Diffusers and deep learning
+torch>=2.0.0
+diffusers>=0.25.0
+transformers>=4.35.0
+accelerate>=0.24.0
+
+# Additional utilities
+typing-extensions>=4.8.0
