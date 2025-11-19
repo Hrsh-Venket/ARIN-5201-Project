@@ -68,6 +68,7 @@ Your task is to create a detailed design plan that includes:
    - Relates to the input text theme
    - Specifies the art style consistent with the logo
    - Describes how to integrate with the existing logo visually
+   - Avoids any suggestions of adding text to the image, and reminds the model to leave space for text placement as per the layout design and never add text.
 
 Be specific and detailed. This plan will guide all subsequent stages of poster generation.
 

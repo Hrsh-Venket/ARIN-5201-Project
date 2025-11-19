@@ -48,9 +48,9 @@ ORIGINAL INPUT TEXT:
 {state["input_text"]}
 
 Generate the text content following the TEXT REQUIREMENTS section of the design plan. Include:
-1. Headline/Title text
-2. Body text (if specified)
-3. Call-to-action text (if specified)
+1. Headline/Title text (2 words or 3 short words)
+2. Body text (if specified) (1 short sentence or 2-3 short bullet points, at most 8 words total)
+3. Call-to-action text (if specified) (2 words or 3 short words)
 
 Format your response clearly with labels for each text element (e.g., "HEADLINE:", "BODY:", "CALL-TO-ACTION:").
 Keep text concise and impactful. Follow any character limits specified in the plan."""

@@ -57,11 +57,13 @@ Evaluate the generated image based on:
 3. RELEVANCE: Does it align with the image generation prompt in the plan?
 4. QUALITY: Is the image quality acceptable for a poster?
 5. COMPOSITION: Does it leave appropriate space for text placement as specified in the layout?
+6. DOES THE IMAGE ADD ANY TEXT ELEMENTS DIRECTLY ON IT? (This is NOT allowed as per the plan)
 
 Respond in this format:
 VALIDATION: [PASS or FAIL]
 LOGO_INTEGRATED: [YES or NO]
 FEEDBACK: [Detailed feedback. If FAIL, specify what needs to be fixed. If logo is not integrated, explicitly state this.]
+TEXT_ON_IMAGE: [YES or NO]
 
 Be thorough in your evaluation. The logo MUST be visibly integrated into the design."""
 
@@ -103,6 +105,7 @@ Be thorough in your evaluation. The logo MUST be visibly integrated into the des
 
     # Check if logo is integrated
     logo_integrated = "LOGO_INTEGRATED: YES" in validation_result.upper()
+    text_on_image = "TEXT_ON_IMAGE: YES" in validation_result.upper()
 
     print(f"Validation result: {'PASSED' if validation_passed else 'FAILED'}")
     print(f"Logo integrated: {'YES' if logo_integrated else 'NO'}")
@@ -115,6 +118,9 @@ Be thorough in your evaluation. The logo MUST be visibly integrated into the des
     # Add logo integration info to feedback
     if not logo_integrated:
         state["validation_feedback"] += "\n\nIMPORTANT: Logo not properly integrated. Must revert to input.png as base."
+
+    if text_on_image:
+        state["validation_feedback"] += "\n\nIMPORTANT: Text elements were found directly on the image, which is not allowed. Must revert to input.png as base."
 
     return state
 
