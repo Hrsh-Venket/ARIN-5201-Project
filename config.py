@@ -12,8 +12,7 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 
 # Model configurations
-OPENROUTER_MODEL = "openrouter/x-ai/grok-4.1-fast" # "openrouter/sherlock-dash-alpha"
-        
+OPENROUTER_MODEL = "x-ai/grok-4.1-fast"  # Grok 4.1 Fast (was sherlock-dash-alpha)
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 HUGGINGFACE_MODEL = "Qwen/Qwen-Image-Edit"
