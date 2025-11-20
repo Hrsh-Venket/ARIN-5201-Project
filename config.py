@@ -16,7 +16,7 @@ SiliconFlow_API_KEY = os.getenv("SiliconFlow_API_KEY")
 OPENROUTER_MODEL = "x-ai/grok-4.1-fast"  # Grok 4.1 Fast (was sherlock-dash-alpha)
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
-SiliconFlow_MODEl = "deepseek-ai/DeepSeek-OCR"  # Deepseek OCR model
+SiliconFlow_MODEL = "deepseek-ai/DeepSeek-OCR"  # Deepseek OCR model
 SiliconFlow_BASE_URL = "https://api.siliconflow.cn/v1"
 
 HUGGINGFACE_MODEL = "Qwen/Qwen-Image-Edit"
