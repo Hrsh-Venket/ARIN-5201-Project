@@ -49,7 +49,7 @@ def editor_agent(state: AgentState) -> AgentState:
 #    )
 
     client = OpenAI(
-        base_url=config.SiliconFlow_Base_URL,
+        base_url=config.SiliconFlow_BASE_URL,
         api_key=config.SiliconFlow_API_KEY,
     )
 
