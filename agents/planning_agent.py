@@ -39,14 +39,14 @@ def planning_agent(state: AgentState) -> AgentState:
     config.log_message(f"Input text: {state['input_text']}")
     config.log_message(f"Input image: {state['input_image_path']}")
 
-    # Initialize OpenRouter client
+    # Initialize SiliconFlow client
     client = OpenAI(
-        base_url=config.OPENROUTER_BASE_URL,
-        api_key=config.OPENROUTER_API_KEY,
+        base_url=config.SiliconFlow_BASE_URL,
+        api_key=config.SiliconFlow_API_KEY,
     )
 
-    config.log_message(f"\nOpenRouter client initialized")
-    config.log_message(f"Model: {config.OPENROUTER_MODEL}")
+    config.log_message(f"\nSiliconFlow client initialized")
+    config.log_message(f"Model: {config.SiliconFlow_MODEL}")
 
     # Encode the input image
     image_base64 = encode_image(state["input_image_path"])
@@ -87,9 +87,9 @@ Format your response with clear section headers: COLOR PALETTE, LAYOUT DESIGN, T
     config.log_message(f"\nPrompt sent to LLM:\n{planning_prompt}")
 
     try:
-        # Call OpenRouter API
+        # Call SiliconFlow API
         response = client.chat.completions.create(
-            model=config.OPENROUTER_MODEL,
+            model=config.SiliconFlow_MODEL,
             messages=[
                 {
                     "role": "user",

@@ -35,14 +35,14 @@ def text_generation_agent(state: AgentState) -> AgentState:
     print(f"Text generation attempt: {attempt_num}/{config.MAX_TEXT_ATTEMPTS}")
     config.log_message(f"Attempt: {attempt_num}/{config.MAX_TEXT_ATTEMPTS}")
 
-    # Initialize OpenRouter client
+    # Initialize SiliconFlow client
     client = OpenAI(
-        base_url=config.OPENROUTER_BASE_URL,
-        api_key=config.OPENROUTER_API_KEY,
+        base_url=config.SiliconFlow_BASE_URL,
+        api_key=config.SiliconFlow_API_KEY,
     )
 
-    config.log_message(f"\nOpenRouter client initialized")
-    config.log_message(f"Model: {config.OPENROUTER_MODEL}")
+    config.log_message(f"\nSiliconFlow client initialized")
+    config.log_message(f"Model: {config.SiliconFlow_MODEL}")
 
     # Create text generation prompt based on planning output
     text_prompt = f"""You are a professional copywriter. Based on the following design plan, generate the text content for the poster.
@@ -69,9 +69,9 @@ Keep text concise and impactful. Follow any character limits specified in the pl
     config.log_message(f"\nPrompt sent to LLM:\n{text_prompt}")
 
     try:
-        # Call OpenRouter API
+        # Call SiliconFlow API
         response = client.chat.completions.create(
-            model=config.OPENROUTER_MODEL,
+            model=config.SiliconFlow_MODEL,
             messages=[
                 {
                     "role": "user",
@@ -124,10 +124,10 @@ def validate_text(state: AgentState) -> AgentState:
     print("\n=== TEXT VALIDATION ===")
     config.log_stage("TEXT VALIDATION", "Validating generated text...")
 
-    # Initialize OpenRouter client
+    # Initialize SiliconFlow client
     client = OpenAI(
-        base_url=config.OPENROUTER_BASE_URL,
-        api_key=config.OPENROUTER_API_KEY,
+        base_url=config.SiliconFlow_BASE_URL,
+        api_key=config.SiliconFlow_API_KEY,
     )
 
     config.log_message(f"Generated text to validate:\n{state['generated_text']}")
@@ -156,7 +156,7 @@ Be strict but fair in your evaluation."""
 
     try:
         response = client.chat.completions.create(
-            model=config.OPENROUTER_MODEL,
+            model=config.SiliconFlow_MODEL,
             messages=[
                 {
                     "role": "user",

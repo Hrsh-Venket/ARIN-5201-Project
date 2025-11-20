@@ -10,10 +10,14 @@ load_dotenv()
 # API Keys
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+SiliconFlow_API_KEY = os.getenv("SiliconFlow_API_KEY")
 
 # Model configurations
 OPENROUTER_MODEL = "x-ai/grok-4.1-fast"  # Grok 4.1 Fast (was sherlock-dash-alpha)
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
+SiliconFlow_MODEl = "deepseek-ai/DeepSeek-OCR"  # Deepseek OCR model
+SiliconFlow_BASE_URL = "https://api.siliconflow.cn/v1"
 
 HUGGINGFACE_MODEL = "Qwen/Qwen-Image-Edit"
 HUGGINGFACE_INFERENCE_STEPS = 50
@@ -32,10 +36,12 @@ INPUT_IMAGE_PATH = "input.png"
 PIPELINE_LOG_PATH = os.path.join(INTERMEDIATE_DIR, "pipeline_log.txt")
 
 # Validate required environment variables
-if not OPENROUTER_API_KEY:
-    raise ValueError("OPENROUTER_API_KEY not found in environment variables")
+#if not OPENROUTER_API_KEY:
+    #raise ValueError("OPENROUTER_API_KEY not found in environment variables")
 if not HUGGINGFACE_TOKEN:
     raise ValueError("HUGGINGFACE_TOKEN not found in environment variables")
+if not SiliconFlow_API_KEY:
+    raise ValueError("SiliconFlow_API_KEY not found in environment variables")
 
 
 # Logging utility functions

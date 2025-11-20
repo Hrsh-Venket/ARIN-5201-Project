@@ -43,9 +43,14 @@ def editor_agent(state: AgentState) -> AgentState:
     config.log_message(f"Input image: {state['input_image_path']}")
 
     # Initialize OpenRouter client
+#    client = OpenAI(
+#        base_url=config.OPENROUTER_BASE_URL,
+#        api_key=config.OPENROUTER_API_KEY,
+#    )
+
     client = OpenAI(
-        base_url=config.OPENROUTER_BASE_URL,
-        api_key=config.OPENROUTER_API_KEY,
+        base_url=config.SiliconFlow_Base_URL,
+        api_key=config.SiliconFlow_API_KEY,
     )
 
     # Encode the current image and input logo
@@ -82,7 +87,7 @@ Be thorough in your evaluation. The logo MUST be visibly integrated into the des
 
     try:
         response = client.chat.completions.create(
-            model=config.OPENROUTER_MODEL,
+            model=config.SiliconFlow_Model,
             messages=[
                 {
                     "role": "user",

@@ -42,10 +42,10 @@ def text_validation_agent(state: AgentState) -> AgentState:
     config.log_message(f"\nExpected text:\n{generated_text}")
     config.log_message(f"\nPoster image path: {poster_path}")
 
-    # Initialize OpenRouter client
+    # Initialize SiliconFlow client
     client = OpenAI(
-        base_url=config.OPENROUTER_BASE_URL,
-        api_key=config.OPENROUTER_API_KEY,
+        base_url=config.SiliconFlow_BASE_URL,
+        api_key=config.SiliconFlow_API_KEY,
     )
 
     # Encode the poster image
@@ -73,9 +73,9 @@ Be thorough and strict in your evaluation."""
     config.log_message(f"\nValidation prompt sent to LLM:\n{validation_prompt}")
 
     try:
-        # Call OpenRouter API with vision
+        # Call SiliconFlow API with vision
         response = client.chat.completions.create(
-            model=config.OPENROUTER_MODEL,
+            model=config.SiliconFlow_MODEL,
             messages=[
                 {
                     "role": "user",
