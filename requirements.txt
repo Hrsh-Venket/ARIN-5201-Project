@@ -17,3 +17,6 @@ accelerate>=0.24.0
 
 # Additional utilities
 typing-extensions>=4.8.0
+
+# ZhipuAI
+zhipuai

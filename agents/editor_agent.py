@@ -4,6 +4,7 @@ Validates generated images against planning requirements.
 """
 import base64
 from openai import OpenAI
+from zhipuai import ZhipuAI
 from state import AgentState
 import config
 import traceback
@@ -48,10 +49,12 @@ def editor_agent(state: AgentState) -> AgentState:
 #        api_key=config.OPENROUTER_API_KEY,
 #    )
 
-    client = OpenAI(
-        base_url=config.SiliconFlow_BASE_URL,
-        api_key=config.SiliconFlow_API_KEY,
-    )
+    # client = OpenAI(
+    #     base_url=config.SiliconFlow_BASE_URL,
+    #     api_key=config.SiliconFlow_API_KEY,
+    # )
+
+    client = ZhipuAI(api_key=config.ZHIPUAI_API_KEY)
 
     # Encode the current image and input logo
     current_image_base64 = encode_image(state["current_image"])
@@ -86,8 +89,37 @@ Be thorough in your evaluation. The logo MUST be visibly integrated into the des
     config.log_message(f"\nValidation prompt sent to LLM:\n{validation_prompt}")
 
     try:
+        # response = client.chat.completions.create(
+        #     model=config.SiliconFlow_MODEL,
+        #     messages=[
+        #         {
+        #             "role": "user",
+        #             "content": [
+        #                 {
+        #                     "type": "text",
+        #                     "text": validation_prompt
+        #                 },
+        #                 {
+        #                     "type": "image_url",
+        #                     "image_url": {
+        #                         "url": f"data:image/png;base64,{input_logo_base64}",
+        #                         "detail": "high"
+        #                     }
+        #                 },
+        #                 {
+        #                     "type": "image_url",
+        #                     "image_url": {
+        #                         "url": f"data:image/png;base64,{current_image_base64}",
+        #                         "detail": "high"
+        #                     }
+        #                 }
+        #             ]
+        #         }
+        #     ],
+        # )
+
         response = client.chat.completions.create(
-            model=config.SiliconFlow_MODEL,
+            model="glm-4.1v-thinking-flashx",
             messages=[
                 {
                     "role": "user",
@@ -100,14 +132,12 @@ Be thorough in your evaluation. The logo MUST be visibly integrated into the des
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/png;base64,{input_logo_base64}",
-                                "detail": "high"
                             }
                         },
                         {
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/png;base64,{current_image_base64}",
-                                "detail": "high"
                             }
                         }
                     ]

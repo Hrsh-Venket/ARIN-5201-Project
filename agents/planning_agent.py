@@ -5,6 +5,7 @@ Analyzes input text and logo to create a comprehensive poster design plan.
 import os
 import base64
 from openai import OpenAI
+from zhipuai import ZhipuAI
 from state import AgentState
 import config
 import traceback
@@ -39,11 +40,12 @@ def planning_agent(state: AgentState) -> AgentState:
     config.log_message(f"Input text: {state['input_text']}")
     config.log_message(f"Input image: {state['input_image_path']}")
 
-    # Initialize SiliconFlow client
-    client = OpenAI(
-        base_url=config.SiliconFlow_BASE_URL,
-        api_key=config.SiliconFlow_API_KEY,
-    )
+    # # Initialize SiliconFlow client
+    # client = OpenAI(
+    #     base_url=config.SiliconFlow_BASE_URL,
+    #     api_key=config.SiliconFlow_API_KEY,
+    # )
+    client = ZhipuAI(api_key=config.ZHIPUAI_API_KEY)
 
     config.log_message(f"\nSiliconFlow client initialized")
     config.log_message(f"Model: {config.SiliconFlow_MODEL}")
@@ -87,28 +89,49 @@ Format your response with clear section headers: COLOR PALETTE, LAYOUT DESIGN, T
     config.log_message(f"\nPrompt sent to LLM:\n{planning_prompt}")
 
     try:
-        # Call SiliconFlow API
+        # # Call SiliconFlow API
+        # response = client.chat.completions.create(
+        #     model=config.SiliconFlow_MODEL,
+        #     messages=[
+        #         {
+        #             "role": "user",
+        #             "content": [
+        #                 {
+        #                     "type": "text",
+        #                     "text": planning_prompt
+        #                 },
+        #                 {
+        #                     "type": "image_url",
+        #                     "image_url": {
+        #                         "url": f"data:image/png;base64,{image_base64}"
+        #                     }
+        #                 }
+        #             ]
+        #         }
+        #     ],
+        #     temperature=0.3,
+        # )
         response = client.chat.completions.create(
-            model=config.SiliconFlow_MODEL,
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": planning_prompt
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/png;base64,{image_base64}"
+                model="glm-4.1v-thinking-flashx",  
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": planning_prompt
+                            },
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/png;base64,{image_base64}"
+                                }
                             }
-                        }
-                    ]
-                }
-            ],
-            temperature=0.3,
-        )
+                        ]
+                    }   
+                ],
+                temperature=1.5,
+            )
 
         planning_output = response.choices[0].message.content
         config.log_message(f"\nLLM Response:\n{planning_output}")

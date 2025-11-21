@@ -106,7 +106,7 @@ def image_generation_agent(state: AgentState) -> AgentState:
         # Prepare inputs for QwenImageEditPipeline
         inputs = {
             "image": input_image,
-            "prompt": prompt,
+            "prompt": prompt + "Be really careful with text added to the img, don't generate blurry or misspelt text.",
             "num_inference_steps": config.HUGGINGFACE_INFERENCE_STEPS,
             "true_cfg_scale": 15.0,
             "negative_prompt": "text",

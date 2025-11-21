@@ -74,6 +74,7 @@ Instructions:
     if state.get("text_validation_feedback") and attempt_num > 1:
         text_addition_prompt += f"\n\nPREVIOUS ATTEMPT FEEDBACK:\n{state['text_validation_feedback'][:300]}\n\nPlease address this feedback in your text addition."
         config.log_message(f"\nIncluding validation feedback in prompt")
+        text_addition_prompt += "Be really careful with text added to the img, don't generate blurry or misspelt text."
 
     print(f"Text addition prompt (first 300 chars): {text_addition_prompt[:300]}...")
     config.log_message(f"\nText addition prompt:\n{text_addition_prompt}")

@@ -4,6 +4,7 @@ Generates text based on planning instructions with retry loop.
 """
 import os
 from openai import OpenAI
+form zhipuai import ZhipuAI
 from state import AgentState
 import config
 import traceback
@@ -36,10 +37,12 @@ def text_generation_agent(state: AgentState) -> AgentState:
     config.log_message(f"Attempt: {attempt_num}/{config.MAX_TEXT_ATTEMPTS}")
 
     # Initialize SiliconFlow client
-    client = OpenAI(
-        base_url=config.SiliconFlow_BASE_URL,
-        api_key=config.SiliconFlow_API_KEY,
-    )
+    # client = OpenAI(
+    #     base_url=config.SiliconFlow_BASE_URL,
+    #     api_key=config.SiliconFlow_API_KEY,
+    # )
+
+    client = ZhipuAI(api_key=config.ZHIPUAI_API_KEY)
 
     config.log_message(f"\nSiliconFlow client initialized")
     config.log_message(f"Model: {config.SiliconFlow_MODEL}")
@@ -69,16 +72,31 @@ Keep text concise and impactful. Follow any character limits specified in the pl
     config.log_message(f"\nPrompt sent to LLM:\n{text_prompt}")
 
     try:
-        # Call SiliconFlow API
+        # # Call SiliconFlow API
+        # response = client.chat.completions.create(
+        #     model=config.SiliconFlow_MODEL,
+        #     messages=[
+        #         {
+        #             "role": "user",
+        #             "content": text_prompt
+        #         }
+        #     ],
+        #     temperature=0.3,
+        # )
+
+        # generated_text = response.choices[0].message.content
+        # config.log_message(f"\nLLM Response:\n{generated_text}")
+
+                # Call SiliconFlow API
         response = client.chat.completions.create(
-            model=config.SiliconFlow_MODEL,
+            model="glm-4.1v-thinking-flashx",
             messages=[
                 {
                     "role": "user",
                     "content": text_prompt
                 }
             ],
-            temperature=0.3,
+            temperature=1.5,
         )
 
         generated_text = response.choices[0].message.content

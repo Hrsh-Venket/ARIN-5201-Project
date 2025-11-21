@@ -4,6 +4,7 @@ Validates that text added to poster matches generated text exactly.
 """
 import base64
 from openai import OpenAI
+from zhipuai import ZhipuAI
 from state import AgentState
 import config
 import traceback
@@ -43,10 +44,11 @@ def text_validation_agent(state: AgentState) -> AgentState:
     config.log_message(f"\nPoster image path: {poster_path}")
 
     # Initialize SiliconFlow client
-    client = OpenAI(
-        base_url=config.SiliconFlow_BASE_URL,
-        api_key=config.SiliconFlow_API_KEY,
-    )
+    # client = OpenAI(
+    #     base_url=config.SiliconFlow_BASE_URL,
+    #     api_key=config.SiliconFlow_API_KEY,
+    # )
+    client = ZhipuAI(api_key=config.ZHIPUAI_API_KEY)
 
     # Encode the poster image
     poster_base64 = encode_image(poster_path)
@@ -74,8 +76,30 @@ Be thorough and strict in your evaluation."""
 
     try:
         # Call SiliconFlow API with vision
+        # response = client.chat.completions.create(
+        #     model=config.SiliconFlow_MODEL,
+        #     messages=[
+        #         {
+        #             "role": "user",
+        #             "content": [
+        #                 {
+        #                     "type": "text",
+        #                     "text": validation_prompt
+        #                 },
+        #                 {
+        #                     "type": "image_url",
+        #                     "image_url": {
+        #                         "url": f"data:image/png;base64,{poster_base64}",
+        #                         "detail": "high"
+        #                     }
+        #                 }
+        #             ]
+        #         }
+        #     ],
+        # )
+
         response = client.chat.completions.create(
-            model=config.SiliconFlow_MODEL,
+            model="glm-4.1v-thinking-flashx",
             messages=[
                 {
                     "role": "user",
@@ -88,7 +112,6 @@ Be thorough and strict in your evaluation."""
                             "type": "image_url",
                             "image_url": {
                                 "url": f"data:image/png;base64,{poster_base64}",
-                                "detail": "high"
                             }
                         }
                     ]

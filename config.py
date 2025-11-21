@@ -11,6 +11,7 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 SiliconFlow_API_KEY = os.getenv("SiliconFlow_API_KEY")
+ZHIPUAI_API_KEY = os.getenv("ZHIPUAI_API_KEY")
 
 # Model configurations
 OPENROUTER_MODEL = "x-ai/grok-4.1-fast"  # Grok 4.1 Fast (was sherlock-dash-alpha)
