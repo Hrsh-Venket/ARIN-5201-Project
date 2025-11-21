@@ -297,6 +297,10 @@ def main():
             "text_adding_attempt_count": 0,
             "text_validation_result": None,
             "text_validation_feedback": None,
+            "text_is_correct": None,
+            "text_is_clear": None,
+            "found_text": None,
+            "specific_fix": None,
             "final_poster_path": None,
             "final_text_path": None,
         }

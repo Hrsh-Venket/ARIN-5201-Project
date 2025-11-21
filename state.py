@@ -42,6 +42,10 @@ class AgentState(TypedDict):
     # Stage 6a: Text Validation Agent
     text_validation_result: Optional[str]
     text_validation_feedback: Optional[str]
+    text_is_correct: Optional[bool]  # Whether text content matches expected
+    text_is_clear: Optional[bool]  # Whether text is clearly generated (not blurry)
+    found_text: Optional[str]  # What text was actually found on the image
+    specific_fix: Optional[str]  # One-sentence instruction to fix the issue
 
     # Stage 7: Final outputs
     final_poster_path: Optional[str]

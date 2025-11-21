@@ -37,8 +37,30 @@ def text_adding_agent(state: AgentState) -> AgentState:
     print(f"Text adding attempt: {attempt_num}/{config.MAX_TEXT_ADDING_ATTEMPTS}")
     config.log_message(f"Attempt: {attempt_num}/{config.MAX_TEXT_ADDING_ATTEMPTS}")
 
-    # ALWAYS use the best image from Stage 4 (image generation)
-    base_image_path = state.get("best_image") or state.get("current_image")
+    # Determine which image to use as base
+    base_image_path = None
+
+    if attempt_num == 1:
+        # First attempt: use best_image from image_generation_agent
+        base_image_path = state.get("best_image") or state.get("current_image")
+        print("First attempt: Using best image from image generation")
+        config.log_message("First attempt: Using best image from image generation")
+    else:
+        # Check if previous poster_with_text meets criteria
+        previous_poster = state.get("poster_with_text")
+        text_is_correct = state.get("text_is_correct", False)
+        text_is_clear = state.get("text_is_clear", False)
+
+        # Use previous poster if it has correct text OR clearly generated text
+        if previous_poster and os.path.exists(previous_poster) and (text_is_correct or text_is_clear):
+            base_image_path = previous_poster
+            print(f"Using previous poster_with_text (correct: {text_is_correct}, clear: {text_is_clear})")
+            config.log_message(f"Using previous poster_with_text (correct: {text_is_correct}, clear: {text_is_clear})")
+        else:
+            # Revert to best image from image generation
+            base_image_path = state.get("best_image") or state.get("current_image")
+            print("Reverting to best image from image generation")
+            config.log_message("Reverting to best image from image generation")
 
     if not base_image_path or not os.path.exists(base_image_path):
         print(f"Warning: Base image not found. Using input image.")
@@ -48,36 +70,33 @@ def text_adding_agent(state: AgentState) -> AgentState:
     print(f"Adding text to image: {base_image_path}")
     config.log_message(f"Base image for text addition: {base_image_path}")
 
-    # Create prompt for text addition
+    # Create short prompt for text addition
     text_content = state.get("best_text") or state.get("generated_text")
 
-    # Extract layout information from planning output
-    planning_text = state["planning_output"]
+    # Build initial short prompt
+    text_addition_prompt = f"Add this text to the poster: {text_content}"
 
-    text_addition_prompt = f"""Add the following text to this poster image according to the layout specifications:
+    # Add specific fix instruction if appropriate
+    if attempt_num > 1:
+        text_is_correct = state.get("text_is_correct", False)
+        text_is_clear = state.get("text_is_clear", False)
+        specific_fix = state.get("specific_fix", "")
 
-LAYOUT SPECIFICATIONS:
-{planning_text}
+        # Only add fix instruction for specific cases
+        if text_is_correct and not text_is_clear:
+            # Text is correct but blurry - add clarity fix
+            text_addition_prompt = specific_fix
+            print("Adding clarity fix instruction")
+            config.log_message("Adding clarity fix instruction")
+        elif text_is_clear and not text_is_correct:
+            # Text is clear but incorrect - add change instruction
+            text_addition_prompt = specific_fix
+            print("Adding text change instruction")
+            config.log_message("Adding text change instruction")
+        # Otherwise, use initial prompt (no feedback)
 
-TEXT TO ADD:
-{text_content}
-
-Instructions:
-- Follow the layout design specified in the plan
-- Use appropriate text placement (header, body, footer as specified)
-- Ensure text is readable and well-positioned
-- Match the color scheme specified in the plan
-- Maintain visual hierarchy
-- Create a professional, polished poster design at 720x1280 resolution"""
-
-    # Add feedback from previous attempt if exists
-    if state.get("text_validation_feedback") and attempt_num > 1:
-        text_addition_prompt += f"\n\nPREVIOUS ATTEMPT FEEDBACK:\n{state['text_validation_feedback']}\n\nPlease address this feedback in your text addition."
-        config.log_message(f"\nIncluding validation feedback in prompt")
-
-    print(f"Text addition prompt (first 300 chars): {text_addition_prompt[:300]}...")
+    print(f"Text addition prompt: {text_addition_prompt}")
     config.log_message(f"\nText addition prompt:\n{text_addition_prompt}")
-    config.log_message(f"\nText to add:\n{text_content}")
 
     # Get pipeline from state
     pipeline = state.get("image_pipeline")
@@ -101,8 +120,8 @@ Instructions:
             "image": input_image,
             "prompt": text_addition_prompt,
             "num_inference_steps": config.HUGGINGFACE_INFERENCE_STEPS,
-            "true_cfg_scale": 25.0,
-            "negative_prompt": " ",
+            "true_cfg_scale": 50.0,
+            "negative_prompt": "Chinese text",
         }
 
         config.log_message(f"Pipeline parameters: steps={config.HUGGINGFACE_INFERENCE_STEPS}, cfg_scale=25.0")

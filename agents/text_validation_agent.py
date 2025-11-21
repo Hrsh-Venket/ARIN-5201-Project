@@ -57,16 +57,23 @@ def text_validation_agent(state: AgentState) -> AgentState:
 EXPECTED TEXT (must match exactly):
 {generated_text}
 
-Please analyze the poster image and verify:
-1. All text from EXPECTED TEXT appears on the poster
-2. Text is spelled correctly (no spelling errors)
-3. Text is clear and readable (not blurred)
-4. Text is not cut off or truncated
-5. Text matches the expected text EXACTLY
+Please analyze the poster image and determine:
+1. TEXT_CORRECT: Does the text content match the expected text exactly? (YES/NO)
+2. TEXT_CLEAR: Is the text clearly generated and readable, not blurry or poorly rendered? (YES/NO)
+3. FOUND_TEXT: What text did you actually find on the image? (transcribe it exactly)
 
-Respond in this format:
+Based on your analysis, provide a SPECIFIC_FIX instruction:
+- If text is correct but blurry/unclear: One sentence to fix clarity (e.g., "Make the text sharper and clearer")
+- If text is clear but incorrect: Use format "Change [found text] to [expected text]" for each element
+- If text is both incorrect and unclear: Provide the "Change X to Y" instruction
+- If text is correct and clear: Say "No changes needed"
+
+Respond in this EXACT format:
+TEXT_CORRECT: [YES or NO]
+TEXT_CLEAR: [YES or NO]
+FOUND_TEXT: [transcribe exactly what you see]
+SPECIFIC_FIX: [one sentence instruction as described above]
 VALIDATION: [APPROVED or REJECTED]
-FEEDBACK: [If REJECTED, detailed feedback on what's wrong. If APPROVED, brief confirmation.]
 
 Be thorough and strict in your evaluation."""
 
@@ -100,15 +107,50 @@ Be thorough and strict in your evaluation."""
         validation_result = response.choices[0].message.content
         config.log_message(f"\nLLM Response:\n{validation_result}")
 
-        # Parse validation result
+        # Parse structured validation result
         validation_approved = "VALIDATION: APPROVED" in validation_result.upper()
 
+        # Extract TEXT_CORRECT
+        text_is_correct = "TEXT_CORRECT: YES" in validation_result.upper()
+
+        # Extract TEXT_CLEAR
+        text_is_clear = "TEXT_CLEAR: YES" in validation_result.upper()
+
+        # Extract FOUND_TEXT
+        found_text = None
+        if "FOUND_TEXT:" in validation_result:
+            found_text_section = validation_result.split("FOUND_TEXT:")[1]
+            # Get until next field or end
+            for field in ["SPECIFIC_FIX:", "VALIDATION:"]:
+                if field in found_text_section:
+                    found_text_section = found_text_section.split(field)[0]
+                    break
+            found_text = found_text_section.strip()
+
+        # Extract SPECIFIC_FIX
+        specific_fix = None
+        if "SPECIFIC_FIX:" in validation_result:
+            specific_fix_section = validation_result.split("SPECIFIC_FIX:")[1]
+            # Get until VALIDATION field
+            if "VALIDATION:" in specific_fix_section:
+                specific_fix_section = specific_fix_section.split("VALIDATION:")[0]
+            specific_fix = specific_fix_section.strip()
+
+        # Update state with all parsed values
         state["text_validation_result"] = "approved" if validation_approved else "rejected"
         state["text_validation_feedback"] = validation_result
+        state["text_is_correct"] = text_is_correct
+        state["text_is_clear"] = text_is_clear
+        state["found_text"] = found_text
+        state["specific_fix"] = specific_fix
 
         print(f"Validation result: {'APPROVED' if validation_approved else 'REJECTED'}")
-        print(f"Feedback: {validation_result[:300]}...")
+        print(f"Text correct: {text_is_correct}, Text clear: {text_is_clear}")
+        print(f"Specific fix: {specific_fix}")
         config.log_message(f"\nValidation status: {'APPROVED' if validation_approved else 'REJECTED'}")
+        config.log_message(f"Text correct: {text_is_correct}, Text clear: {text_is_clear}")
+        config.log_message(f"Found text: {found_text}")
+        config.log_message(f"Specific fix: {specific_fix}")
 
     except Exception as e:
         error_msg = f"ERROR: {str(e)}"
@@ -119,6 +161,10 @@ Be thorough and strict in your evaluation."""
         # On error, reject to allow retry
         state["text_validation_result"] = "rejected"
         state["text_validation_feedback"] = f"Validation failed due to error: {str(e)}"
+        state["text_is_correct"] = False
+        state["text_is_clear"] = False
+        state["found_text"] = None
+        state["specific_fix"] = None
 
     return state
 
