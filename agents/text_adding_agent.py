@@ -73,8 +73,24 @@ def text_adding_agent(state: AgentState) -> AgentState:
     # Create short prompt for text addition
     text_content = state.get("best_text") or state.get("generated_text")
 
-    # Build initial short prompt
-    text_addition_prompt = f"Add this text to the poster: {text_content}"
+    # Extract actual text values without labels
+    text_parts = []
+    for line in text_content.split('\n'):
+        line = line.strip()
+        if ':' in line:
+            # Extract text after the label (e.g., "HEADLINE: text" -> "text")
+            text_value = line.split(':', 1)[1].strip()
+            if text_value:
+                text_parts.append(text_value)
+        elif line:
+            # If no label, just add the line
+            text_parts.append(line)
+
+    # Combine all text parts
+    actual_text = ' '.join(text_parts)
+
+    # Build initial short prompt with actual text only
+    text_addition_prompt = f"Add this text to the poster: {actual_text}"
 
     # Add specific fix instruction if appropriate
     if attempt_num > 1:
