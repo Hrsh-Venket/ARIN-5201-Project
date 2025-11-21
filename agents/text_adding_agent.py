@@ -96,7 +96,11 @@ def text_adding_agent(state: AgentState) -> AgentState:
         # Otherwise, use initial prompt (no feedback)
 
     print(f"Text addition prompt: {text_addition_prompt}")
-    config.log_message(f"\nText addition prompt:\n{text_addition_prompt}")
+    config.log_message(f"\n{'='*60}")
+    config.log_message(f"PROMPT TO TEXT ADDING MODEL:")
+    config.log_message(f"{'='*60}")
+    config.log_message(f"{text_addition_prompt}")
+    config.log_message(f"{'='*60}")
 
     # Get pipeline from state
     pipeline = state.get("image_pipeline")
@@ -120,7 +124,7 @@ def text_adding_agent(state: AgentState) -> AgentState:
             "image": input_image,
             "prompt": text_addition_prompt,
             "num_inference_steps": config.HUGGINGFACE_INFERENCE_STEPS,
-            "true_cfg_scale": 50.0,
+            "true_cfg_scale": 10.0,
             "negative_prompt": "Chinese text",
         }
 
