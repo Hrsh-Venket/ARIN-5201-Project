@@ -69,10 +69,10 @@ Your task is to create a detailed design plan that includes:
 
 3. TEXT REQUIREMENTS: Based on the input text, specify:
    - What text should be generated (headline, body text, call-to-action, etc.)
-   - Character limits for each text element
    - Font style recommendations (bold, regular, etc.)
    - Text color recommendations
    - Maximum of 8 words in total for all text elements combined
+   - Do not include the actual text content here and allow the model to generate it
 
 4. IMAGE GENERATION PROMPT: Create a detailed prompt for image generation that:
    - Incorporates elements from the logo/mascot
