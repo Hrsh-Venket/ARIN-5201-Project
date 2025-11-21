@@ -75,11 +75,11 @@ def image_generation_agent(state: AgentState) -> AgentState:
         prompt = prompt_section.strip()
     else:
         # Fallback: use planning output as context
-        prompt = f"Create a poster background based on this design plan: {planning_text[:500]}"
+        prompt = f"Create a poster background based on this design plan: {planning_text}"
 
     # Add feedback from previous attempt if exists
     if state.get("validation_feedback") and attempt_num > 1:
-        prompt += f"\n\nIMPROVEMENTS NEEDED: {state['validation_feedback'][:300]}"
+        prompt += f"\n\nIMPROVEMENTS NEEDED: {state['validation_feedback']}"
         config.log_message(f"\nIncluding validation feedback in prompt")
 
     print(f"Using base image: {base_image_path}")

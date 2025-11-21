@@ -94,6 +94,7 @@ Be thorough and strict in your evaluation."""
                     ]
                 }
             ],
+            max_tokens=500,
         )
 
         validation_result = response.choices[0].message.content

@@ -108,6 +108,7 @@ Be thorough in your evaluation. The logo MUST be visibly integrated into the des
                     ]
                 }
             ],
+            max_tokens=800,
         )
 
         validation_result = response.choices[0].message.content

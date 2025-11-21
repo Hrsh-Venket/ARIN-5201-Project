@@ -57,7 +57,7 @@ Generate the text content following the TEXT REQUIREMENTS section of the design 
 1. Headline/Title text
 2. Body text (if specified)
 3. Call-to-action text (if specified)
-There cannot be more than 8 words in total between the three sections.
+There CANNOT be more than 8 words in total between the three sections.
 
 Format your response clearly with labels for each text element (e.g., "HEADLINE:", "BODY:", "CALL-TO-ACTION:").
 Keep text concise and impactful. Follow any character limits specified in the plan."""
@@ -79,6 +79,7 @@ Keep text concise and impactful. Follow any character limits specified in the pl
                     "content": text_prompt
                 }
             ],
+            max_tokens=300,
         )
 
         generated_text = response.choices[0].message.content
@@ -146,6 +147,7 @@ Evaluate whether the text:
 2. Matches the tone and style requirements
 3. Includes all required text elements
 4. Is appropriate for the poster design
+5. Is limited to 8 words total
 
 Respond in this format:
 VALIDATION: [PASS or FAIL]
@@ -164,6 +166,7 @@ Be strict but fair in your evaluation."""
                     "content": validation_prompt
                 }
             ],
+            max_tokens=500,
         )
 
         validation_result = response.choices[0].message.content

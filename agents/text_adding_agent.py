@@ -72,7 +72,7 @@ Instructions:
 
     # Add feedback from previous attempt if exists
     if state.get("text_validation_feedback") and attempt_num > 1:
-        text_addition_prompt += f"\n\nPREVIOUS ATTEMPT FEEDBACK:\n{state['text_validation_feedback'][:300]}\n\nPlease address this feedback in your text addition."
+        text_addition_prompt += f"\n\nPREVIOUS ATTEMPT FEEDBACK:\n{state['text_validation_feedback']}\n\nPlease address this feedback in your text addition."
         config.log_message(f"\nIncluding validation feedback in prompt")
 
     print(f"Text addition prompt (first 300 chars): {text_addition_prompt[:300]}...")

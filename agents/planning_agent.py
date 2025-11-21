@@ -72,6 +72,7 @@ Your task is to create a detailed design plan that includes:
    - Character limits for each text element
    - Font style recommendations (bold, regular, etc.)
    - Text color recommendations
+   - Maximum of 8 words in total for all text elements combined
 
 4. IMAGE GENERATION PROMPT: Create a detailed prompt for image generation that:
    - Incorporates elements from the logo/mascot
@@ -107,6 +108,7 @@ Format your response with clear section headers: COLOR PALETTE, LAYOUT DESIGN, T
                     ]
                 }
             ],
+            max_tokens=2000,
         )
 
         planning_output = response.choices[0].message.content
