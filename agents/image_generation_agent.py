@@ -79,7 +79,7 @@ def image_generation_agent(state: AgentState) -> AgentState:
 
     # Add feedback from previous attempt if exists
     if state.get("validation_feedback") and attempt_num > 1:
-        prompt += f"\n\nIMPROVEMENTS NEEDED: {state['validation_feedback']}"
+        prompt += f"\n\nIMPROVEMENTS NEEDED: {state['validation_feedback'][:300]}"
         config.log_message(f"\nIncluding validation feedback in prompt")
 
     print(f"Using base image: {base_image_path}")
@@ -108,7 +108,7 @@ def image_generation_agent(state: AgentState) -> AgentState:
             "image": input_image,
             "prompt": prompt,
             "num_inference_steps": config.HUGGINGFACE_INFERENCE_STEPS,
-            "true_cfg_scale": 15.0,
+            "true_cfg_scale": 4.0 #15.0,
             "negative_prompt": "text",
         }
 
